@@ -1,11 +1,9 @@
 package com.tuneit.jrex.expressions;
 
-import java.util.Formatter;
-
-public class JrexExprLogical extends JrexExpressionFormatter {
-	static final String AND = "&&";
-	static final String OR = "||";
-	static final String NOT = "!";
+public class JrexExprLogical implements JrexExpression {
+	public static final String AND = "&&";
+	public static final String OR = "||";
+	public static final String NOT = "!";
 	
 	private String operator;
 	private JrexExpression leftValue;
@@ -19,24 +17,13 @@ public class JrexExprLogical extends JrexExpressionFormatter {
 	}
 
 	@Override
-	public void formatStapCode(Formatter formatter) {
+	public String toString() {
 		if(this.operator.equals(JrexExprLogical.NOT)) {
-			formatter.format("%s(%s)", this.operator, this.leftValue.toStapCode());
+			return String.format("%s(%s)", this.operator, this.leftValue.toString());
 		}
 		else {
-			formatter.format("(%s %s %s)", this.leftValue.toStapCode(), 
-					this.operator, this.rightValue.toStapCode());
-		}
-	}
-
-	@Override
-	public void formatDTraceCode(Formatter formatter) {
-		if(this.operator.equals(JrexExprLogical.NOT)) {
-			formatter.format("%s(%s)", this.operator, this.leftValue.toStapCode());
-		}
-		else {
-			formatter.format("(%s %s %s)", this.leftValue.toDTraceCode(), 
-					this.operator, this.rightValue.toDTraceCode());
+			return String.format("(%s %s %s)", this.leftValue.toString(), 
+								 this.operator, this.rightValue.toString());
 		}
 	}
 }

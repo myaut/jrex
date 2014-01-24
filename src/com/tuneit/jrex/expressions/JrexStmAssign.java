@@ -1,24 +1,16 @@
 package com.tuneit.jrex.expressions;
 
-import java.util.Formatter;
-
-public class JrexStmAssign extends JrexExpressionFormatter {
-	private JrexVarLocal var;
+public class JrexStmAssign implements JrexStatement {
+	private JrexExpression var;
 	private JrexExpression value;
 	
-	public JrexStmAssign(JrexVarLocal var, JrexExpression value) {
+	public JrexStmAssign(JrexExpression var, JrexExpression value) {
 		this.var = var;
 		this.value = value;
 	}
 
 	@Override
-	void formatStapCode(Formatter formatter) {
-		formatter.format("%s = %s;", this.var.toStapCode(), this.value.toStapCode());
+	public String toString() {
+		return String.format("%s = %s;", this.var.toString(), this.value);
 	}
-
-	@Override
-	void formatDTraceCode(Formatter formatter) {
-		formatter.format("%s = %s;", this.var.toDTraceCode(), this.value.toDTraceCode());
-	}
-
 }

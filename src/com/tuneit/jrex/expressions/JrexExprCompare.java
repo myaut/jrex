@@ -1,8 +1,6 @@
 package com.tuneit.jrex.expressions;
 
-import java.util.Formatter;
-
-public class JrexExprCompare extends JrexExpressionFormatter {
+public class JrexExprCompare implements JrexExpression {
 	static final String EQUAL = "==";
 	static final String NOT_EQUAL = "!=";
 	static final String LESS = "<";
@@ -22,14 +20,9 @@ public class JrexExprCompare extends JrexExpressionFormatter {
 	}
 
 	@Override
-	public void formatStapCode(Formatter formatter) {
-		formatter.format("(%s %s %s)", this.leftValue.toStapCode(), 
-				this.operator, this.rightValue.toStapCode());
+	public String toString() {
+		return String.format("(%s %s %s)", this.leftValue.toString(), 
+							 this.operator, this.rightValue.toString());
 	}
 
-	@Override
-	public void formatDTraceCode(Formatter formatter) {
-		formatter.format("(%s %s %s)", this.leftValue.toDTraceCode(), 
-				this.operator, this.rightValue.toDTraceCode());
-	}
 }

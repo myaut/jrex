@@ -12,25 +12,15 @@ public class JrexStmBody implements JrexExpression {
 	}
 
 	@Override
-	public String toStapCode() {
+	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		
 		for(JrexStatement statement : this.statements) {
-			sb.append(statement.toStapCode());
+			sb.append('\t');
+			sb.append(statement.toString());
+			sb.append('\n');
 		}
 		
 		return sb.toString();
 	}
-
-	@Override
-	public String toDTraceCode() {
-		StringBuilder sb = new StringBuilder();
-		
-		for(JrexStatement statement : this.statements) {
-			sb.append(statement.toStapCode());
-		}
-		
-		return sb.toString();
-	}
-
 }
