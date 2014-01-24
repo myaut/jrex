@@ -1,10 +1,10 @@
 package com.tuneit.jrex.expressions.dtrace;
 
 import com.tuneit.jrex.expressions.JrexExpression;
-import com.tuneit.jrex.expressions.JrexStatement;
+import com.tuneit.jrex.expressions.JrexGlobalStatement;
 import com.tuneit.jrex.expressions.JrexStmBody;
 
-public class JrexProbeDTrace implements JrexExpression {
+public class JrexProbeDTrace implements JrexGlobalStatement {
 	public JrexProbeDTrace(String name, JrexExpression predicate,
 			JrexStmBody body) {
 		this.name = name;

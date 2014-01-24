@@ -2,10 +2,11 @@ package com.tuneit.jrex.expressions.stap;
 
 import com.tuneit.jrex.expressions.JrexExpression;
 import com.tuneit.jrex.expressions.JrexStatement;
+import com.tuneit.jrex.expressions.JrexGlobalStatement;
 import com.tuneit.jrex.expressions.JrexStmBody;
 import com.tuneit.jrex.expressions.JrexExprLogical;
 
-public class JrexProbeStap implements JrexExpression {
+public class JrexProbeStap implements JrexGlobalStatement {
 	public JrexProbeStap(String name, JrexExpression predicate,
 			JrexStmBody body) {
 		this.name = name;

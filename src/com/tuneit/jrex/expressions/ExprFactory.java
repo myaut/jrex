@@ -1,5 +1,7 @@
 package com.tuneit.jrex.expressions;
 
+import java.util.List;
+
 import com.tuneit.jrex.expressions.stap.*;
 import com.tuneit.jrex.expressions.dtrace.*;
 
@@ -28,7 +30,7 @@ public class ExprFactory {
 	 * @param predicate (optional)
 	 * @throws JrexInvalidTool 
 	 */
-	public JrexExpression probe(String systemTapName, String dtraceName, JrexStmBody body, 
+	public JrexGlobalStatement probe(String systemTapName, String dtraceName, JrexStmBody body, 
 							    JrexExpression predicate) throws JrexInvalidTool {
 		if(this.tool == ExprFactory.SYSTEMTAP) {
 			return new JrexProbeStap(systemTapName, predicate, body);
@@ -40,7 +42,7 @@ public class ExprFactory {
 		throw new JrexInvalidTool();
 	}
 	
-	public JrexExpression probe(String systemTapName, String dtraceName, 
+	public JrexGlobalStatement probe(String systemTapName, String dtraceName, 
 					JrexStmBody body)  throws JrexInvalidTool {
 		return this.probe(systemTapName, dtraceName, body, null);
 	}
@@ -53,6 +55,10 @@ public class ExprFactory {
 		JrexStatement statements[] = { statement };
 		
 		return new JrexStmBody(statements);
+	}
+	
+	public JrexStmBody body() {
+		return new JrexStmBody();
 	}
 	
 	public JrexExpression compare(String operator, JrexExpression leftValue, JrexExpression rightValue) {
@@ -114,5 +120,12 @@ public class ExprFactory {
 		throw new JrexInvalidTool();
 	}
 
-
+	public JrexStatement print(String prefix, List<JrexPrintArgument> args) throws JrexInvalidTool {
+		if(this.tool == ExprFactory.SYSTEMTAP)
+			return new JrexPrintStap(prefix, args);
+		else if(this.tool == ExprFactory.DTRACE)
+			return new JrexPrintDTrace(prefix, args);
+		
+		throw new JrexInvalidTool();
+	}
 }

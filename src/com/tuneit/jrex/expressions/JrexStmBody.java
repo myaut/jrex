@@ -7,8 +7,16 @@ import java.util.List;
 public class JrexStmBody implements JrexExpression {
 	private List<JrexStatement> statements;
 	
+	public JrexStmBody() {
+		this.statements = new ArrayList<JrexStatement>();
+	}
+	
 	public JrexStmBody(JrexStatement... statements) {
 		this.statements = new ArrayList<JrexStatement>(Arrays.asList(statements));
+	}
+	
+	public void addStatement(JrexStatement statement) {
+		this.statements.add(statement);
 	}
 
 	@Override
