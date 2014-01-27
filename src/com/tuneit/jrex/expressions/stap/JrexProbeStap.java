@@ -22,6 +22,7 @@ public class JrexProbeStap implements JrexGlobalStatement {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		
+		sb.append("probe ");
 		sb.append(this.name);
 		sb.append("\n{ \n");
 		

@@ -3,15 +3,15 @@ package com.tuneit.jrex.expressions.dtrace;
 import java.util.List;
 
 import com.tuneit.jrex.expressions.JrexStatement;
-import com.tuneit.jrex.expressions.JrexPrintArgument;
+import com.tuneit.jrex.expressions.PrintArgument;
 
 public class JrexPrintDTrace implements JrexStatement {
 	static final String FIELD_DELIMITER = " ";
 	
-	private List<JrexPrintArgument> args;
+	private List<PrintArgument> args;
 	private String prefix;
 	
-	public JrexPrintDTrace(String prefix, List<JrexPrintArgument> args) {
+	public JrexPrintDTrace(String prefix, List<PrintArgument> args) {
 		this.prefix = prefix;
 		this.args = args;
 	}
@@ -25,15 +25,16 @@ public class JrexPrintDTrace implements JrexStatement {
 		sb.append(this.prefix);
 		sb.append(JrexPrintDTrace.FIELD_DELIMITER);
 		
-		for(JrexPrintArgument arg: args) {
+		for(PrintArgument arg: args) {
 			switch(arg.getFormat()) {
-			case JrexPrintArgument.FMT_STRING:
+			case PrintArgument.FMT_STRING:
+			case PrintArgument.FMT_XSTRING:
 				sb.append("%s");
 				break;
-			case JrexPrintArgument.FMT_LONG:
+			case PrintArgument.FMT_LONG:
 				sb.append("%d");
 				break;
-			case JrexPrintArgument.FMT_POINTER:
+			case PrintArgument.FMT_POINTER:
 				sb.append("%p");
 				break;
 			default:
@@ -45,7 +46,7 @@ public class JrexPrintDTrace implements JrexStatement {
 		
 		sb.append("\\n\"");
 		
-		for(JrexPrintArgument arg: args) {
+		for(PrintArgument arg: args) {
 			sb.append(", ");
 			sb.append(arg.getExpression().toString());
 		}
