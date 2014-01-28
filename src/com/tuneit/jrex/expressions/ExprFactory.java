@@ -199,12 +199,14 @@ public class ExprFactory {
 			}
 		}
 		else {
-			return null;
+			return new TracingState(new JrexGlobalStatementNull(), 
+									new JrexStmNull(), new JrexStmNull(), 
+									this.equal(new JrexExprNull(), new JrexExprNull()));
 		}
 		
 		enableStm = new JrexStmAssign(stateVar, new JrexString("1"));
 		disableStm = new JrexStmAssign(stateVar, new JrexString("0"));
-		checkExpr = new JrexExprCompare(JrexExprCompare.EQUAL, stateVar, new JrexString("1"));
+		checkExpr = this.equal(stateVar, new JrexString("1"));
 		
 		return new TracingState(stateDecl, enableStm, disableStm, checkExpr);
 	}

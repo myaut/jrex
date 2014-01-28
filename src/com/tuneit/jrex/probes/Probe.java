@@ -1,5 +1,6 @@
 package com.tuneit.jrex.probes;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,15 +13,17 @@ public class Probe {
 	
 	private String systemTapName;
 	private String dtraceName;
-	private String group;
 	private String name;
+	private String group;
+	private boolean isStart;
 	
-	public Probe(String group, String name, String systemTapName, String dtraceName) {
-		this.group = group;
+	public Probe(String name, String systemTapName, String dtraceName) {
+		this.group = null;
 		this.name = name;
 		this.systemTapName = systemTapName;
 		this.dtraceName = dtraceName;
 		this.predicate = null;
+		this.isStart = false;
 		
 		this.attributes = new ArrayList<ProbeAttribute>();
 		this.statements = new ArrayList<JrexStatement>();
@@ -80,12 +83,82 @@ public class Probe {
 		
 		return probe.toString();
 	}
-
-	public String getGroup() {
-		return group;
+	
+	public int getXParamCount() {
+		int count = 0;
+		
+		for(ProbeAttribute attr : this.attributes) {
+			if(attr.getType() == PrintArgument.FMT_XSTRING)
+				++count;
+		}
+		
+		return count;
+	}
+	
+	public Event parseEvent(String probeParams, String xParamLines[]) {
+		Event event;
+		String params[] = probeParams.split(" ");
+		int xParamId = 0;
+		int paramId = 0;
+		
+		long tid = Long.parseLong(params[0]);
+		long time = Long.parseLong(params[1]);
+		
+		event = new Event(this.group, this.name, time, tid);
+		
+		for(ProbeAttribute attr : this.attributes) {
+			if(attr.getType() == PrintArgument.FMT_XSTRING) {
+				String xParam = xParamLines[xParamId];
+				int spaceIdx = xParam.indexOf(' ');
+				
+				String paramName = xParam.substring(0, spaceIdx);
+				String paramValue = xParam.substring(spaceIdx + 1);
+						
+				if(paramName == attr.getName()) {
+					throw new JrexParseException("Invalid expected parameter name: " + paramName);
+				}
+				
+				event.addStringParam(paramName, paramValue);
+				
+				++xParamId;
+			}
+			else {
+				String param = params[paramId];
+				
+				switch(attr.getType()) {
+				case PrintArgument.FMT_LONG:
+					event.addLongParam(attr.getName(), Long.parseLong(param));
+					break;
+				case PrintArgument.FMT_POINTER:
+					event.addLongParam(attr.getName(), Long.parseLong(param, 16));
+					break;
+				case PrintArgument.FMT_STRING:
+					event.addStringParam(attr.getName(), param);
+					break;
+				}
+				
+				++paramId;
+			}
+		}
+		
+		return event;
 	}
 	
 	public String getName() {
 		return name;
+	}
+	
+	/* Service methods */
+	
+	public void setGroup(String name) {
+		this.group = name;
+	}
+	
+	public void setStartProbe() {
+		this.isStart = true;
+	}
+	
+	public boolean isStartProbe() {
+		return this.isStart;
 	}
 }
