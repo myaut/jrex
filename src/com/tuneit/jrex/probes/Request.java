@@ -1,11 +1,15 @@
 package com.tuneit.jrex.probes;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.tuneit.jrex.expressions.PrintArgument;
+
 public class Request {
-	static boolean DEBUG = true;
+	static boolean DEBUG = false;
 	
 	public Request(Event startEvent, Event endEvent) {
 		this.parentRequest = null;
@@ -73,24 +77,45 @@ public class Request {
 	
 	@Override
 	public String toString() {
-		return "Request [group=" + group + ", startTime=" + startTime
-				+ ", time=" + time + ", tid=" + tid + "]";
+		long normStartTime = getStartTime();
+		String normStartTimeStr = Long.toString(normStartTime);
+		
+		/* For child requests - normalize time to root's time */
+		if(parentRequest != null) {
+			Request parent = parentRequest;
+			while(parent.getParent() != null) {
+				parent = parent.getParent();
+			}
+			
+			normStartTime -= parent.getStartTime();
+			normStartTimeStr = "+" + Long.toString(normStartTime);
+		}
+		
+		return String.format("%s/%d/%s", getGroup(), getTid(), normStartTimeStr);
 	}
 	
 	public boolean hasLongParam(String key) {
-		return this.startEvent.hasLongParam(key);
+		return this.startEvent.hasLongParam(key) || this.endEvent.hasLongParam(key);
 	}
 	
 	public long getLongParam(String key) {
-		return this.startEvent.getLongParam(key);
+		if(this.startEvent.hasLongParam(key)) {
+			return this.startEvent.getLongParam(key);
+		}
+		
+		return this.endEvent.getLongParam(key);
 	}
 	
 	public boolean hasStringParam(String key) {
-		return this.startEvent.hasStringParam(key);
+		return this.startEvent.hasStringParam(key) || this.endEvent.hasStringParam(key);
 	}
 	
 	public String getStringParam(String key) {
-		return this.startEvent.getStringParam(key);
+		if(this.startEvent.hasStringParam(key)) {
+			return this.startEvent.getStringParam(key);
+		}
+		
+		return this.endEvent.getStringParam(key);
 	}
 
 	public String getGroup() {
@@ -108,8 +133,31 @@ public class Request {
 	public long getTid() {
 		return tid;
 	}
+	
+	public Request getParent() {
+		return parentRequest;
+	}
 
 	public List<Request> getSubRequests() {
 		return subRequests;
+	}
+	
+	public List<String> getParamNames() {
+		Probe startProbe = this.startEvent.getProbe();
+		Probe endProbe = this.endEvent.getProbe();
+		
+		ArrayList<String> params = new ArrayList<String>();
+		
+		for(ProbeAttribute startParam : startProbe.getAttributes()) {
+			params.add(startParam.getName());
+		}
+		
+		for(ProbeAttribute endParam : endProbe.getAttributes()) {
+			if(!params.contains(endParam.getName())) {
+				params.add(endParam.getName());
+			}
+		}
+		
+		return params;
 	}
 }

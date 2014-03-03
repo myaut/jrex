@@ -29,6 +29,10 @@ public class Probe {
 		this.statements = new ArrayList<JrexStatement>();
 	}
 	
+	public List<ProbeAttribute> getAttributes() {
+		return this.attributes;
+	}
+	
 	public void addAttribute(ProbeAttribute attribute) {
 		this.attributes.add(attribute);
 	}
@@ -99,7 +103,7 @@ public class Probe {
 		Event event;
 		String params[] = probeParams.split(" ");
 		int xParamId = 0;
-		int paramId = 0;
+		int paramId = 2;
 		
 		long tid = Long.parseLong(params[0]);
 		long time = Long.parseLong(params[1]);
@@ -127,10 +131,10 @@ public class Probe {
 				
 				switch(attr.getType()) {
 				case PrintArgument.FMT_LONG:
-					event.addLongParam(attr.getName(), Long.parseLong(param));
+					event.addLongParam(attr.getName(), Long.parseLong(param), param);
 					break;
 				case PrintArgument.FMT_POINTER:
-					event.addLongParam(attr.getName(), Long.parseLong(param, 16));
+					event.addLongParam(attr.getName(), Long.parseLong(param, 16), param);
 					break;
 				case PrintArgument.FMT_STRING:
 					event.addStringParam(attr.getName(), param);

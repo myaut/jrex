@@ -27,8 +27,9 @@ public class Event implements Comparable {
 	private HashMap<String, Long> longParams;
 	private HashMap<String, String> stringParams;
 	
-	public void addLongParam(String name, long value) {
+	public void addLongParam(String name, long value, String strValue) {
 		this.longParams.put(name, value);
+		this.stringParams.put(name, strValue);
 	}
 	
 	public void addStringParam(String name, String value) {
